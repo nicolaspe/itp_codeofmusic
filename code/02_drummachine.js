@@ -44,7 +44,7 @@ function setup(){
   // variables init
   blocks = createVector(6, 16);
   block_size = 40;
-  block_spacing = 20;
+  block_padding = 20;
 
   // modes setup
   colorMode(HSB, 360, 100, 100);
