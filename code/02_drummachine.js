@@ -7,7 +7,9 @@
 
 // === INITIALIZATION ===
 // audio variables
-let beat = 0;
+let ppqn = 0;   // pulses per quarter note
+let beat = 0;   // = quarter note
+let sign = 4;   // time signature over 4ths
 let audio_grid = [];
 let audio_sampl = [];
 let audio_files = ["../media/samps/k_Evil808.wav",
@@ -19,9 +21,9 @@ let audio_files = ["../media/samps/k_Evil808.wav",
 
 
 // tone.js stuff
-Tone.Transport.bpm.value = 145;
+Tone.Transport.bpm.value = 140;
 Tone.Transport.timeSignature = [4,4];
-Tone.Transport.scheduleRepeat(play_beat, "4n");
+Tone.Transport.scheduleRepeat(beat_clock, "8i");
 
 // graphics variables
 let blocks, block_size, block_spacing;
@@ -44,7 +46,7 @@ function setup(){
   // variables init
   blocks = createVector(6, 16);
   block_size = 40;
-  block_padding = 20;
+  block_spacing = 20;
 
   // modes setup
   colorMode(HSB, 360, 100, 100);
@@ -88,16 +90,23 @@ function draw(){
 
 
 // === MUSIC
-function play_beat() {
-  beat = ( ++beat )%16;
+// function that replicates MIDI's beat clock
+function beat_clock(){
+  ppqn++;
+  if (ppqn >= 24){
+    ppqn = 0;
+    beat = ( ++beat )%16;
 
-  // check for this beat on every isntrument
-  for ( let j = 0; j < blocks.x; j++ ) {
-    if ( audio_grid[beat][j] && audio_sampl[j].loaded ) {
-      audio_sampl[j].start();
+    // check for this beat on every isntrument
+    for ( let j = 0; j < blocks.x; j++ ) {
+      if ( audio_grid[beat][j] && audio_sampl[j].loaded ) {
+        audio_sampl[j].start();
+      }
     }
   }
+
 }
+
 
 
 
