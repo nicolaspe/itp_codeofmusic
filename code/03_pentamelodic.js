@@ -23,7 +23,8 @@ let pentaton  = [
   ["E4", "G4", "A4", "C5", "D5"],
   ["G5", "A5", "C6", "D6", "E6"]
 ];
-let play_func, synty;
+let play_func;
+let synty;
 
 
 // graphics & interaction variables
