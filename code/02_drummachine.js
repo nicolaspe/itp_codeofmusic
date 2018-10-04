@@ -67,8 +67,6 @@ function setup(){
     for ( let j = 0; j <  blocks.x; j++ ) {
       audio_grid[i][j]  = false;
       audio_hover[i][j] = false;
-      // if ( random(100) < 30 ) { audio_grid[i][j] = true; }
-      // else { audio_grid[i][j] = false; }
     }
   }
 
@@ -122,6 +120,7 @@ function mousePressed() {
 }
 
 
+
 // === MUSIC
 // function that replicates MIDI's beat clock
 function beat_clock(){
@@ -138,7 +137,6 @@ function beat_clock(){
     }
   }
 }
-
 
 
 
