@@ -1,10 +1,14 @@
 # Broken textures
 
-This week's assignment was provided a lot of learning and frustrations, but I got around those problems and created some nice synth-based soundscape.
+This week's assignment was provided a lot of learning and frustrations, but I got around those problems and created a nice synth-based soundscape. While all this experimentation did not let me complete the visuals as I wanted, I'm sure I"ll get around that part later.
+
+You can [see the code here](https://github.com/nicolaspe/itp_codeofmusic/blob/master/code/04_synthspace.js) or [play with the experiment here](https://nicolaspe.github.io/itp_codeofmusic/code/synthspace.html).
 
 
 
-## Chord base
+## Chord and texture base
+I wanted to create my own composition of oscillators, adding and filtering them, but I'm not sure I follow Tone.js' logic completely. So I ended up just using the built-in synths manipulating the parameters to get the desired sounds.
+
 Doing the chord base was not that complex, but I just had to figure out some functions for them to work as expected. I wanted the chords to play as long as I pressed the corresponding keys, so the `keydown` event only called `triggerAttack`, leaving the `keyup` with the `releaseAll` function. That function took me a while to discover, as `triggerRelease` needs the specific notes to release (which works fine for a piano, but no so well for chords the way I was playing them).
 
 ```javascript
@@ -39,7 +43,7 @@ function onKeyUp( keyname ){
 
 
 ## Broken patterns
-The thing that didn't really work was using patterns or sequences. I copied the code from some of the examples in the Tone.js site, but when triggered, they would do... something I didn't get nor expect. It would take them several seconds to stop after I pressed the corresponding key, and while the sound texture was not bad, the lack of control was something I could not feel satisfied with.
+The thing that didn't really work was using patterns or sequences. Inspired by the cool sounds of [Max's last assignment](https://wp.nyu.edu/maxhorwich/2018/09/30/the-code-of-music-3-melody/), I tried copying the code from some of the examples in the Tone.js site and see how it worked. Sadly, it didn't. At least, not as expected: when triggered, they would create a huge sound mass (which was still cool), but would take them several seconds to stop after I pressed the corresponding key. While the sound texture was not bad, the lack of control was something I could not feel satisfied with.
 
 ```javascript
 stasis = new Tone.Sequence( function(time, note) {
@@ -81,11 +85,20 @@ So in the end, I just looked back on my previous assignment and replicated (with
 ```javascript
 case 'k':
 	if( prog_id == 0 ){
-		prog_id = Tone.Transport.scheduleRepeat( play_progression );
+		prog_id = Tone.Transport.scheduleRepeat( play_progression, "8n" );
 	}
 	break;
 case 'l':
 	Tone.Transport.cancel( prog_id );
 	prog_id = 0;
 	break;
+
+function play_progression() {
+	let note = progressions[prog_index][prog_notes];
+	synths[ prog_synth ].triggerAttackRelease( note , "8n" );
+
+	if( ++prog_notes >= progressions[ prog_index ].length ){
+		prog_notes = 0;
+	}
+}
 ```
