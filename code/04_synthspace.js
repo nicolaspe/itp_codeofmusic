@@ -14,6 +14,7 @@ let POLY = 5;
 let SIGN = 4;
 let synths, synth_sq, synth_fm, synth_xm;
 let patterns, tritone, calm, suspense, stasis;
+let progressions, prog_index, prog_notes, prog_synth, prog_id;
 
 
 window.addEventListener('load', init);
@@ -22,9 +23,9 @@ window.addEventListener('load', init);
 function init(){
 
 	container = document.querySelector('#sketch');
-	// let wid = window.innerWidth;
+	let wid = window.innerWidth;
 	// let hei = window.innerHeight;
-  let wid = 720;
+  // let wid = 720;
   let hei = 400;
 
 
@@ -67,9 +68,9 @@ function init(){
 
 // === EVENTS
 function onWindowResize(){
-  // let wid = window.innerWidth;
+  let wid = window.innerWidth;
   // let hei = window.innerHeight;
-  let wid = 720;
+  // let wid = 720;
   let hei = 400;
 
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -93,25 +94,50 @@ function render(){
 function onKeyDown( keyname ){
 	switch( keyname ){
 		case 'a':
-			synth_sq.triggerAttack("A2");
+			synth_fm.triggerAttack(["A4", "E5", "E4"]);
 			break;
 		case 's':
-			synth_fm.triggerAttack(["A3", "C3", "F3"], "8n");
+			synth_fm.triggerAttack(["A3", "C3", "F3"]);
 			break;
 		case 'd':
-			synth_xm.triggerAttack(["A2", "D2", "F2"], "4n");
+			synth_xm.triggerAttack(["D3", "A3", "F#3"]);
 			break;
-		case 'q':
-			tritone.start();
+		case 'f':
+			synth_xm.triggerAttack(["E4", "A4", "C#5"]);
 			break;
-		case 'w':
-			calm.start();
+		// case 'q':
+		// 	tritone.start();
+		// 	break;
+		// case 'w':
+		// 	calm.start();
+		// 	break;
+		// case 'e':
+		// 	suspense.start();
+		// 	break;
+		// case 'r':
+		// 	stasis.start();
+		// 	break;
+		case 'k':
+			if( prog_id == 0 ){
+				prog_id = Tone.Transport.scheduleRepeat( play_progression, "8n" );
+				console.log( prog_id );
+			}
 			break;
-		case 'e':
-			suspense.start();
+		case 'l':
+			Tone.Transport.cancel( prog_id );
+			prog_id = 0;
 			break;
-		case 'r':
-			stasis.start();
+		case 'z':
+			prog_index = 0;
+			break;
+		case 'x':
+			prog_index = 1;
+			break;
+		case 'c':
+			prog_index = 2;
+			break;
+		case 'v':
+			prog_index = 3;
 			break;
 		default:
 			break;
@@ -120,7 +146,7 @@ function onKeyDown( keyname ){
 function onKeyUp( keyname ){
 	switch( keyname ){
 		case 'a':
-			synth_sq.triggerRelease("A2");
+			synth_fm.releaseAll();
 			break;
 		case 's':
 			synth_fm.releaseAll();
@@ -128,12 +154,15 @@ function onKeyUp( keyname ){
 		case 'd':
 			synth_xm.releaseAll();
 			break;
-		case 'p':
-			tritone.stop();
-			calm.stop();
-			suspense.stop();
-			stasis.stop();
+		case 'f':
+			synth_xm.releaseAll();
 			break;
+		// case 'p':
+		// 	tritone.stop();
+		// 	calm.stop();
+		// 	suspense.stop();
+		// 	stasis.stop();
+		// 	break;
 		default:
 			break;
 	}
@@ -170,6 +199,7 @@ function initSound(){
 				"exponent": 2,
 			}
 	});
+	synth_sq.volume = -6;
 
 	synth_fm = new Tone.PolySynth( POLY, Tone.FMSynth ).toMaster();
 	synth_fm.set({
@@ -241,23 +271,57 @@ function initSound(){
 	stasis.loop = 0;
 
 
+	prog_index = 0;
+	prog_notes = 0;
+	prog_synth = 0;
+	progressions = [
+		["E5",  "F#5", "G#5", "E5", "G5", "F#4", "E4",  "F#5", "D5",  "E4", "G#5"],
+		["A3",  "C#4", "F4",  "A4", "F3", "G4",  "C#4", "A3",  "F#3", "G3", "C#4"],
+		["G#4", "A4",  "E4",  "D4", "D5", "E5",  "A3",  "A5",  "G#5", "D4", "E4"],
+		["A4",  "E4",  "A4",  "A3", "E4", "A4",  "A3",  "E3",  "E4",  "E5", "A3"]
+	];
+
+	prog_id = 0;
+
+}
+
+function play_progression() {
+	let note = progressions[prog_index][prog_notes];
+	synths[ prog_synth ].triggerAttackRelease( note , "8n" );
+
+	if( ++prog_notes >= progressions[ prog_index ].length ){
+		prog_notes = 0;
+		// prog_index = Math.floor( Math.random() * progressions.length );
+	}
 }
 
 
 // === ENVIRONMENT
 function createEnvironment(){
+	// SKYDOME
+	let sky_img = "../media/eso0932a_sphere.jpg"
+	// load the texture and create the element as a callback
+	loader.load(sky_img, function(texture){
+		let sky_geo = new THREE.SphereGeometry(600, 24, 24);
+		let sky_mat = new THREE.MeshBasicMaterial({
+			map: texture,
+			side: THREE.BackSide,
+		});
+		var skydome = new THREE.Mesh(sky_geo, sky_mat);
+		scene.add(skydome);
+	});
 
 	// REFERENCE PLANE
-	let plane_geo = new THREE.PlaneGeometry(200, 200, 20, 20);
-	let plane_mat = new THREE.MeshBasicMaterial({
-		color: 0x555555,
-		side: THREE.DoubleSide,
-		wireframe: true
-	});
-	let ref_plane = new THREE.Mesh(plane_geo, plane_mat);
-	ref_plane.rotation.x = Math.PI/2;
-	ref_plane.position.set(0, -20, 0);
-	scene.add(ref_plane);
+	// let plane_geo = new THREE.PlaneGeometry(200, 200, 20, 20);
+	// let plane_mat = new THREE.MeshBasicMaterial({
+	// 	color: 0x555555,
+	// 	side: THREE.DoubleSide,
+	// 	wireframe: true
+	// });
+	// let ref_plane = new THREE.Mesh(plane_geo, plane_mat);
+	// ref_plane.rotation.x = Math.PI/2;
+	// ref_plane.position.set(0, -20, 0);
+	// scene.add(ref_plane);
 
 	// LIGHTS!
 	let a_light = new THREE.AmbientLight(0xffffff, 0.05);
