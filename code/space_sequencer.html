@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>space sequencer</title>
+
+    <link rel="stylesheet" href="../codeofmusic_code.css">
+
+    <script src="../libs/three.min.js"></script>
+    <script src="../libs/Tone.min.js"></script>
+    <script src="../libs/OrbitControls.js"></script>
+
+    <script src="./07_spaceseq.js"></script>
+
+  </head>
+  <body>
+    <div id="sketch"></div>
+    
+    <div class="desc">
+      <p>bpm:
+        <button type="button" onclick="bpmDownX()" name="bpm_downX">-10</button>
+        <button type="button" onclick="bpmDown5()" name="bpm_down5">-5</button>
+        <button type="button" onclick="bpmDown1()" name="bpm_down1">-1</button>
+        <span id="bpm">120</span>
+        <button type="button" onclick="bpmUp1()" name="bpm_up1">+1</button>
+        <button type="button" onclick="bpmUp5()" name="bpm_up5">+5</button>
+        <button type="button" onclick="bpmUpX()" name="bpm_upX">+10</button>
+      </p>
+
+      <p>time signature:
+        <button type="button" onclick="timesigDown()" name="timesig_down">-</button>
+        <span id="timesig">4</span>
+        <button type="button" onclick="timesigUp()" name="timesig_up">+</button>
+        /
+        <span id="ts_den">4</span>
+      </p>
+
+      <!-- <p>subdivisions:
+        <button type="button" name="subs_down">-</button>
+        <span id="subs">4</span>
+        <button type="button" name="subs_up">+</button>
+      </p> -->
+
+      <p>bars:
+        <button type="button" onclick="barsDown()" name="bars_down">-</button>
+        <span id="bars">4</span>
+        <button type="button" onclick="barsUp()" name="bars_up">+</button>
+      </p>
+
+      <p>scale:
+        <button type="button" onclick="scaleDown()" name="scale_down"><</button>
+        <span id="scale">A</span>
+        <button type="button" onclick="scaleUp()" name="scale_up">></button>
+
+        <button type="button" onclick="modeDown()" name="mode_down"><</button>
+        <span id="mode">minor</span>
+        <button type="button" onclick="modeUp()" name="mode_up">></button>
+      </p>
+
+      <p>octave:
+        <button type="button" onclick="octDown()" name="oct_down">-</button>
+        <span id="octave">4</span>
+        <button type="button" onclick="octUp()" name="oct_up">+</button>
+      </p>
+    </div>
+  </body>
+</html>
