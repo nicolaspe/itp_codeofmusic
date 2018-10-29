@@ -69,6 +69,7 @@ function init(){
   window.addEventListener('mousemove', onMouseMove, false);
   window.addEventListener('click', onMouseMove, false);
   window.addEventListener('keypress', onKeyPress, true );
+	navigator.xr.addEventListener('devicechange', checkForXRSupport);
 
   domInit();
 	createEnvironment();
@@ -244,6 +245,20 @@ function refreshScale() {
 	console.log("base note: ", scale_base);
 }
 
+async function checkForXRSupport() {
+  // Check to see if there is an XR device available that's capable of immersive
+  // presentation (for example: displaying in a headset). If the device has that
+  // capability the page will want to add an "XR" button to the page (similar to
+  // a "Fullscreen" button) that starts the display of immersive content.
+  navigator.xr.supportsSession({ immersive: true }).then(() => {
+    var enterXrBtn = document.createElement("button");
+    enterXrBtn.innerHTML = "Enter VR";
+    enterXrBtn.addEventListener("click", beginXRSession);
+    document.body.appendChild(enterXrBtn);
+  }).catch((reason) => {
+    console.log("Session not supported: " + reason);
+  });
+}
 
 
 // === ANIMATION
